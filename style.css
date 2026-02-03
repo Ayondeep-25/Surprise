@@ -1,6 +1,19 @@
+/* Make sizing predictable and prevent horizontal scroll */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,40 +24,51 @@ body {
 /* Envelope Screen */
 #envelope-container {
     text-align: center;
-    cursor:pointer;
+    cursor: pointer;
+}
+
+/* Ensure the envelope screen is perfectly centered */
+#envelope-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 @keyframes pulse {
     0% {
-        transform:scale(1);
+        transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }
 }
 
-#envelope{
+#envelope {
     width: 200px;
     animation: pulse 1.5s infinite;
     cursor: pointer;
 }
 
-#letter-container{
+#letter-container {
     display: none;
-    position:fixed;
+    position: fixed;
     inset: 0;
     justify-content: center;
     align-items: center;
 }
 
-.letter-window{
+.letter-window {
     width: 90vw;
     max-width: 800px;
     aspect-ratio: 3/2;
-    padding: 20px 20px 0 20px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -55,12 +79,15 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 12px;
-    gap: 1px;
-    padding-top: 180px;
+    gap: 8px;
 
-    transform: scale(1.2);
+    /* Keep the modal constrained to the viewport */
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+
+    transform: none;
     opacity: 0;
-    transition: transform 0.6s ease, opacity 0.6s ease;
+    transition: transform 0.45s ease, opacity 0.45s ease;
 }
 
 .letter-window.open {
@@ -70,7 +97,7 @@ body {
 
 h1 {
     font-size: 30px;
-    margin:0;
+    margin: 0;
 }
 
 p {
@@ -81,6 +108,7 @@ p {
 
 .cat {
     width: 250px;
+    max-width: 100%;
     margin: 10px 0;
     transition: width 0.4s ease;
 }
@@ -97,21 +125,23 @@ p {
     position: relative;
 }
 
-.no-wrapper{
-    position:relative;
+.no-wrapper {
+    position: relative;
 }
 
 .btn {
     width: 120px;
+    max-width: 100%;
     cursor: pointer;
     user-select: none;
 }
 
 .yes-btn,
 .no-btn {
-width: 120px;
-height: auto;
-display: inline-block;
+    width: 120px;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
 }
 
 .yes-btn {
@@ -128,12 +158,276 @@ display: inline-block;
     cursor: default;
 }
 
-.final-text{
+.final-text {
     font-size: 22px;
     line-height: 1.4;
     text-align: center;
     display: inline-block;
     padding: 10px 20px;
-    background-color: rgba(255,240,240,0.5);
+    background-color: rgba(255, 240, 240, 0.5);
     border-radius: 12px;
+}
+
+/* Make images and embeds responsive globally */
+img,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Tweak sizes on very small screens */
+@media (max-width: 420px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 24px;
+    }
+
+    .cat {
+        width: 160px;
+    }
+
+    .btn {
+        width: 90px;
+    }
+
+    .letter-window {
+        padding-top: 140px;
+    }
+}
+
+/* Confetti Particle Animation */
+.confetti {
+    position: fixed;
+    pointer-events: none;
+    font-size: 24px;
+    z-index: 9999;
+}
+
+@keyframes confetti-fall {
+    to {
+        transform: translateY(100vh) rotateZ(360deg);
+        opacity: 0;
+    }
+}
+
+/* Typewriter Effect */
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink-cursor {
+    50% {
+        border-right-color: transparent;
+    }
+}
+
+.typewriter {
+    overflow: hidden;
+    border-right: 3px solid #ff69b4;
+    white-space: nowrap;
+    animation: typewriter 1.5s steps(40, end) forwards, blink-cursor 0.75s step-end infinite;
+    display: inline-block;
+}
+
+/* Shake & Bounce Animations */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-3px, -3px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(3px, 3px) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(-3px, 3px) rotate(-1deg);
+    }
+
+    40% {
+        transform: translate(3px, -3px) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(-2px, -2px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(2px, 2px) rotate(1deg);
+    }
+
+    70% {
+        transform: translate(-2px, 2px) rotate(0deg);
+    }
+
+    80% {
+        transform: translate(2px, -2px) rotate(0deg);
+    }
+
+    90% {
+        transform: translate(-1px, -1px) rotate(0deg);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-8px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    75% {
+        transform: translateY(-4px);
+    }
+}
+
+.no-btn.shaking {
+    animation: shake 0.4s ease-in-out forwards, bounce 0.6s ease-in-out 0.1s forwards;
+}
+
+/* Love Message Styling */
+.love-message {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d4516f;
+    text-align: center;
+    max-width: 280px;
+    margin-bottom: 15px;
+    font-style: italic;
+    font-family: "Aldrich", sans-serif;
+    min-height: 60px;
+    padding: 10px;
+}
+
+/* Countdown display for Valentine date */
+.countdown {
+    margin: 8px 0 6px 0;
+    padding: 6px 12px;
+    background: rgba(255, 240, 240, 0.6);
+    border-radius: 999px;
+    color: #7e1538;
+    font-weight: 700;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+/* Paper Note Screen */
+#note-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("heart-bg.jpg");
+    z-index: 1000;
+}
+
+.paper-note {
+    width: 90vw;
+    max-width: 480px;
+    height: 500px;
+    background: linear-gradient(135deg, #fffef9 0%, #faf7f0 100%);
+    padding: 30px;
+    border-radius: 4px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.note-greeting {
+    font-size: 28px;
+    font-style: italic;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    font-family: "Georgia", serif;
+    letter-spacing: 1px;
+}
+
+.note-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.note-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.note-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.note-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+}
+
+.note-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #2c3e50;
+    text-align: left;
+    font-family: "Georgia", serif;
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+
+.continue-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+    font-family: "Pixelify Sans", sans-serif;
+    align-self: center;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
+}
+
+.continue-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
 }
